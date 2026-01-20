@@ -1,0 +1,77 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Maintainer      tgian@iu.edu
+    Description     Toolchain for WRF/WPS (GNU+MPICH, HDF5-parallel, netCDF-C/Fortran)
+    WRF             intended for 4.6.x (em_real)
+    WPS             intended for 4.6.0
+
+%environment
+    export PATH=/opt/mpich/bin:/opt/netcdf/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:$LD_LIBRARY_PATH
+    export NETCDF=/opt/netcdf
+    export HDF5=/opt/hdf5
+    export CC=mpicc
+    export CXX=mpicxx
+    export FC=mpif90
+
+%post
+    set -e
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential gfortran g++ gcc make cmake m4 perl \
+        tcsh csh wget curl git ca-certificates \
+        libcurl4-openssl-dev libssl-dev zlib1g-dev libpng-dev bzip2 xz-utils
+    update-ca-certificates
+
+    mkdir -p /opt/src /opt/scripts
+
+    # MPICH (good ABI compatibility across systems)
+    cd /opt/src
+    wget -q https://www.mpich.org/static/downloads/4.2.3/mpich-4.2.3.tar.gz
+    tar -xf mpich-4.2.3.tar.gz && cd mpich-4.2.3
+    ./configure --prefix=/opt/mpich --disable-fortran=no FC=gfortran
+    make -j"$(nproc)" && make install
+
+    # HDF5 (parallel, with Fortran)
+    cd /opt/src
+    wget -q https://github.com/HDFGroup/hdf5/releases/download/hdf5-1.14.3/hdf5-1.14.3.tar.gz
+    tar -xf hdf5-1.14.3.tar.gz && cd hdf5-1.14.3
+    CC=mpicc FC=mpif90 ./configure --prefix=/opt/hdf5 --enable-parallel --enable-fortran
+    make -j"$(nproc)" && make install
+
+    # netCDF-C
+    cd /opt/src
+    wget -q https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.9.2.tar.gz -O netcdf-c-4.9.2.tar.gz
+    tar -xf netcdf-c-4.9.2.tar.gz && cd netcdf-c-4.9.2
+    CPPFLAGS="-I/opt/hdf5/include" LDFLAGS="-L/opt/hdf5/lib" CC=mpicc \
+      ./configure --prefix=/opt/netcdf --disable-dap --enable-netcdf-4
+    make -j"$(nproc)" && make install
+
+    # netCDF-Fortran (must be built after netCDF-C)
+    cd /opt/src
+    wget -q https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.1.tar.gz -O netcdf-fortran-4.6.1.tar.gz
+    tar -xf netcdf-fortran-4.6.1.tar.gz && cd netcdf-fortran-4.6.1
+    CPPFLAGS="-I/opt/netcdf/include" LDFLAGS="-L/opt/netcdf/lib" FC=mpif90 \
+      ./configure --prefix=/opt/netcdf
+    make -j"$(nproc)" && make install
+
+    # Helper: quick environment sourcing
+    cat >/opt/scripts/paths.sh <<'EOF'
+export PATH=/opt/mpich/bin:/opt/netcdf/bin:$PATH
+export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:$LD_LIBRARY_PATH
+export NETCDF=/opt/netcdf
+export HDF5=/opt/hdf5
+export CC=mpicc
+export CXX=mpicxx
+export FC=mpif90
+EOF
+    chmod +x /opt/scripts/paths.sh
+
+%runscript
+    echo "WRF/WPS toolchain image. Typical next step:"
+    echo "  apptainer shell --bind \$PWD:/work wrf.sif"
+    echo "  source /opt/scripts/paths.sh"
+    echo "  # then compile WRF & WPS under /work"
+

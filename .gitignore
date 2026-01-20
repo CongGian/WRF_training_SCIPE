@@ -1,0 +1,9 @@
+# Do not commit built images or local run artifacts
+*.sif
+*.img
+*.tar.gz
+*.log
+wrf-work/
+wrfdata/
+WRF-*/
+WPS-*/
