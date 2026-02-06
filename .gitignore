@@ -1,9 +1,9 @@
-# Do not commit built images or local run artifacts
-*.sif
-*.img
-*.tar.gz
+# Common OS/editor files
+.DS_Store
+*~
+*.swp
+
+# Logs and temporary output
 *.log
-wrf-work/
-wrfdata/
-WRF-*/
-WPS-*/
+*.out
+tmp/
