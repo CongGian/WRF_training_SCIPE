@@ -5,7 +5,7 @@
 ##################################
 
 ## Unzip input data directories 
-tar -xJvf archive.tar.xz
+tar -xJvf data_input.tar.xz
 
 # Create "models" folder and download the weights into it
 mkdir models

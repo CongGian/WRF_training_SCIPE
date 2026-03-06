@@ -4,3 +4,5 @@ onnxruntime-gpu
 cdsapi
 netCDF4
 ncvue
+xarray
+matplotlib
