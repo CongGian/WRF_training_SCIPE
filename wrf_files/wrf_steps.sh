@@ -1,5 +1,4 @@
-#!/bin/bash
-
+## Reference steps compiling WRF and WPS
 ## Create directory for folders and other files
 mkdir wrf_stuff
 cd wrf_stuff

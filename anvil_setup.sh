@@ -1,4 +1,4 @@
-#!/bin/bash
+## Steps for setting up Pangu model env
 
 # 1. Register for an account at Climate Data Store
 # 2. Copy the url and key displayed on CDS API key and add them to the ~/.cdsapirc file

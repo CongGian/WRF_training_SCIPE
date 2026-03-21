@@ -1,8 +1,6 @@
-#!/bin/bash 
-
-###########################################################
-## Creating plots and figures to compare data and output ##
-###########################################################
+#####################################################################
+## Steps for creating plots and figures to compare data and output ##
+#####################################################################
 
 # Copy output files from the model runs into the directory
 cp ../WRF/run/wrfout_d01_2011-04-28_00:00:00 .
