@@ -27,7 +27,9 @@ conda install -c nvidia cuda-toolkit=12.9.1 cudnn
 pip install -r requirements_gpu.txt
 
 ## Install ipykernal if wanted to use Jupyter notebook for anything
-conda install -c conda-forge cartopy ipykernal cfgrib
+conda install -c conda-forge cartopy
+conda install -c conda-forge cfgrib
+conda install -c conda-forge ipykernal
 
 # Install ipykernal for jupyter notebook use
 python -m ipykernel install --name pangu --display-name "Python (Pangu)" --user
