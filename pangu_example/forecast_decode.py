@@ -4,16 +4,16 @@ from forecast_decode_functions import surface, upper
 
 # The date and time of the initial field
 date_time = datetime(
-    year=2023, 
-    month=7, 
-    day=11,
-    hour=23,
+    year=2011, 
+    month=4, 
+    day=27,
+    hour=00,
     minute=0)
 date_time_final = datetime(
-    year=2023,
-    month=7,
-    day=17,
-    hour=11,
+    year=2011,
+    month=4,
+    day=28,
+    hour=12,
     minute=0)
  
 # The directory for results forecast
