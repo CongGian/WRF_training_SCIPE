@@ -1,0 +1,37 @@
+&share
+ wrf_core = 'ARW',
+ max_dom = 1
+ start_date = '2011-04-27_00:00:00'
+ end_date   = '2011-04-28_12:00:00'
+ interval_seconds = 10800
+/
+
+&geogrid
+ parent_id         =   1
+ parent_grid_ratio =   1
+ i_parent_start    =   1
+ j_parent_start    =   1
+ e_we              =  200
+ e_sn              =  125
+ geog_data_res = 'default'
+ dx = 25000,
+ dy = 25000,
+ map_proj = 'lambert'
+
+ ref_lat   = 38.353
+ ref_lon   = -97.140
+ truelat1  = 40.046
+ truelat2  = 40.046
+ truelat1  = 38.800
+ stand_lon = -98.437
+ geog_data_path = '/reference/ptolemy/examples/wrf_workshop/wps_geog/'
+/
+
+&ungrib
+ out_format = 'WPS'
+ prefix = 'FILE'
+/
+
+&metgrid
+ fg_name = 'FILE'
+/
