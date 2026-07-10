@@ -2,7 +2,4 @@ numpy
 onnx==1.19.1
 onnxruntime-gpu
 cdsapi
-netCDF4
 ncvue
-xarray
-matplotlib

@@ -3,20 +3,19 @@
 #SBATCH -A cis240917
 #SBATCH -p shared # the default queue is "shared" queue
 #SBATCH --nodes=1
-#SBATCH --ntasks=10
-##SBATCH --ntasks=20 # Uncomment when not using openmp to maintain 20 cores
+#SBATCH --ntasks=12
 #SBATCH --cpus-per-task=2 # Uncomment when not using openmp to maintain 20 cores
-#SBATCH --time=1:00:00
+#SBATCH --time=00:20:00
 #SBATCH --job-name wrf
-#SBATCH --mail-user=ak1817@msstate.edu   # e-mail address
-#SBATCH --mail-type=END
+#SBATCH --mail-user=<your_email>   # e-mail address
+#SBATCH --mail-type=BEGIN,FAIL,END
 
 # Unload all modules
 ml purge
 
 # Load mvapich2 for parallel execution 
 ml gcc
-ml  mvapich2
+ml mvapich2
 
 export SCRATCH=/anvil/scratch/$USER
 

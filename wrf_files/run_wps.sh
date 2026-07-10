@@ -3,14 +3,11 @@
 #SBATCH -A cis240917
 #SBATCH -p shared # the default queue is "shared" queue
 #SBATCH --nodes=1
-#SBATCH --ntasks=10
-#SBATCH --mem=20G 
-#SBATCH --time=1:00:00
+#SBATCH --ntasks=2
+#SBATCH --time=00:10:00
 #SBATCH --job-name wps
-#SBATCH --mail-user=ak1817@msstate.edu   # e-mail address
-#SBATCH --mail-type=BEGIN
-#SBATCH --mail-type=END
-#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=<your_email>  # e-mail address
+#SBATCH --mail-type=BEGIN,FAIL,END
 
 # Unload all modules
 ml purge
