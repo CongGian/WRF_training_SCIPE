@@ -1,29 +1,10 @@
 # WRF Container Hands-On
 
-This short exercise is designed for the containerization block of the NAIRR
-WRF/Pangu workshop. Participants work from their Anvil scratch space so the
-repository, hands-on scripts, container definition files, and staged image all
-live under one workshop directory.
+Run these commands on Anvil. This exercise uses your scratch space and a
+prepared Apptainer image. It does not build the image, submit Slurm jobs, or
+run a full WRF forecast.
 
-The short exercise intentionally does not build `wrf.sif`, compile WRF/WPS, or
-run a full WRF science case. Those steps are too slow for the short hands-on
-block and require staged meteorological inputs. The cloned repository is still
-needed because it contains the Apptainer definition files and build notes used
-for the container-building discussion.
-
-The goal is to teach the stable container workflow and the boundary between
-commands on the Anvil login node and commands running inside Apptainer:
-
-1. Compare host/login-node commands with commands run inside the image.
-2. Inspect the prepared image.
-3. Verify MPI, netCDF, and HDF5 inside the image.
-4. Prove that a bind-mounted scratch directory is writable from inside the
-   container.
-
-## Scratch Setup
-
-Start in scratch, clone the repository, set the workshop path, and copy the
-prepared image into that workshop directory:
+## 1. Set Up Your Workshop Directory
 
 ```bash
 cd /anvil/scratch/$USER
@@ -31,22 +12,22 @@ git clone https://github.com/CongGian/WRF_training_SCIPE.git
 cd WRF_training_SCIPE
 
 export WORKSHOP=/anvil/scratch/$USER/WRF_training_SCIPE
-cp /anvil/projects/x-cis240917/WRF_training_SCIPE/wrf.sif "$WORKSHOP/"
-```
-
-The helper script performs the copy and prints the same environment defaults:
-
-```bash
 bash hands_on/setup_workshop.sh
 ```
 
-Default image path after setup:
+The setup script copies the prepared image into your scratch directory:
 
-```bash
+```text
 $WORKSHOP/wrf.sif
 ```
 
-Recommended participant sequence:
+It also creates the working directory used by the bind-mount test:
+
+```text
+$WORKSHOP/container_hands_on
+```
+
+## 2. Run The Hands-On Scripts
 
 ```bash
 export WORKSHOP=/anvil/scratch/$USER/WRF_training_SCIPE
@@ -59,7 +40,42 @@ bash hands_on/02_verify_stack.sh
 bash hands_on/03_bind_mount_write_test.sh
 ```
 
-For a slower instructor-guided version, run
-`hands_on/00_login_vs_container_walkthrough.sh` first and pause after each
-visible command to explain which part is running on the login node and which
-part is running inside Apptainer.
+## 3. What Each Script Shows
+
+```text
+00_login_vs_container_walkthrough.sh
+```
+
+Compares simple commands on the login node with commands inside Apptainer. The
+hostname and Linux kernel stay the same, but the compiler, MPI, netCDF, and
+HDF5 tools come from the container.
+
+```text
+01_inspect_image.sh
+```
+
+Prints metadata from `wrf.sif`.
+
+```text
+02_verify_stack.sh
+```
+
+Checks the container MPI wrappers, netCDF, netCDF-Fortran, and parallel HDF5.
+
+```text
+03_bind_mount_write_test.sh
+```
+
+Mounts your scratch work directory inside the container as `/work`, writes a
+small file from inside Apptainer, and prints that file from the login node.
+
+The output file is:
+
+```text
+$WORKDIR/container_write_check.txt
+```
+
+## 4. Stop Here
+
+The Slurm and full WRF model-run steps are handled separately by the training
+team.
