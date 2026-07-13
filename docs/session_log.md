@@ -1014,3 +1014,39 @@ Current Git state:
   `fatal: could not read Username for 'https://github.com'`.
 - `gh` is not installed, so there is no GitHub CLI-authenticated fallback in
   this environment.
+
+## 2026-07-13 18:33 EDT
+
+Completed upload and participant-style scratch test:
+
+- Amended the hands-on commit author and committer to the user's GitHub
+  identity:
+  `Cong Gian <33527035+CongGian@users.noreply.github.com>`.
+- HTTPS push still could not authenticate from the Anvil terminal, but SSH
+  push worked.
+- Because the local working tree was dirty and behind `origin/main`, created a
+  clean temporary clone at `/tmp/wrf_push_clone_20260713_1819`, cherry-picked
+  the hands-on commit there, and pushed it to GitHub.
+- Pushed commit on `origin/main`: `4dd235b`
+  (`Add scratch-based container hands-on scripts`).
+- Freshly cloned GitHub `main` over HTTPS into:
+  `/anvil/scratch/$USER/wrf_hands_on_github_participant_test_20260713_1823/WRF_training_SCIPE`.
+- Confirmed the fresh clone contains commit `4dd235b`.
+- Ran `hands_on/setup_workshop.sh` from that fresh scratch clone with
+  `WORKSHOP` pointing at the clone. It copied
+  `/anvil/projects/x-cis240917/WRF_training_SCIPE/wrf.sif` into the scratch
+  clone as `wrf.sif`.
+- Ran participant scripts successfully from the fresh GitHub scratch clone:
+  `hands_on/00_login_vs_container_walkthrough.sh`,
+  `hands_on/01_inspect_image.sh`,
+  `hands_on/02_verify_stack.sh`, and
+  `hands_on/03_bind_mount_write_test.sh`.
+
+Observed staged image details during the participant test:
+
+- Project image copied to scratch is 484M and has build date
+  `Monday_10_November_2025_15:51:17_UTC`.
+- It reports MPICH `4.2.3`, netCDF-C `4.9.2`, netCDF-Fortran `4.6.1`, and HDF5
+  `1.14.6` with `Parallel HDF5: yes`.
+- The bind-mount test wrote `container_write_check.txt` under
+  `$WORKSHOP/container_hands_on` and printed it successfully from the host side.
