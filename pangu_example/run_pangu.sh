@@ -5,11 +5,10 @@
 #SBATCH --gpus-per-node=1
 ##SBATCH --gres=gpu:1
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --time=00:01:00
+#SBATCH --time=00:05:00
 #SBATCH --mem=15G
 #SBATCH --job-name pangu
-#SBATCH --mail-user=ak1817@msstate.edu   # e-mail address
+#SBATCH --mail-user=<your_email>   # e-mail address
 #SBATCH --mail-type=END
 
 # Load conda and activate environment
