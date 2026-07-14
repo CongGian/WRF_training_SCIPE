@@ -36,6 +36,19 @@ export WORKDIR=$WORKSHOP/container_hands_on
 
 bash hands_on/00_login_vs_container_walkthrough.sh
 bash hands_on/01_inspect_image.sh
+```
+
+Before the stack check and bind-mount check, look at the container path setup
+script. `/opt/scripts/paths.sh` lives inside the container and sets the
+compiler, MPI, HDF5, and netCDF paths used by the later commands:
+
+```bash
+apptainer exec "$IMAGE" cat /opt/scripts/paths.sh
+```
+
+Then continue:
+
+```bash
 bash hands_on/02_verify_stack.sh
 bash hands_on/03_bind_mount_write_test.sh
 ```
