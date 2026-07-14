@@ -75,7 +75,42 @@ The output file is:
 $WORKDIR/container_write_check.txt
 ```
 
-## 4. Stop Here
+## 4. Optional: Navigate Inside The Container
+
+This short interactive step shows that normal shell commands still work inside
+Apptainer, while `/work` points to your Anvil scratch directory.
+
+Start an interactive shell with the scratch work directory mounted as `/work`:
+
+```bash
+apptainer shell --bind $WORKDIR:/work $IMAGE
+```
+
+Inside the container:
+
+```bash
+pwd
+ls
+cd /work
+pwd
+mkdir -p demo_dir
+cp /etc/os-release demo_dir/container_os_release.txt
+ls -lh demo_dir
+cat demo_dir/container_os_release.txt
+exit
+```
+
+Back on the login node:
+
+```bash
+ls -lh $WORKDIR/demo_dir
+cat $WORKDIR/demo_dir/container_os_release.txt
+```
+
+The file persists because it was written under `/work`, which is the bind mount
+to your scratch directory, not a permanent change to the container image.
+
+## 5. Stop Here
 
 The Slurm and full WRF model-run steps are handled separately by the training
 team.
