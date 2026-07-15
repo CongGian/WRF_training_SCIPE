@@ -3,12 +3,13 @@
 #SBATCH -A cis240917
 #SBATCH -p shared # the default queue is "shared" queue
 #SBATCH --nodes=1
-#SBATCH --ntasks=12
-#SBATCH --cpus-per-task=2 # Uncomment when not using openmp to maintain 20 cores
+#SBATCH --ntasks=16
+##SBATCH --cpus-per-task=2 # Uncomment when not using openmp to maintain 20 cores
 #SBATCH --time=00:20:00
 #SBATCH --job-name wrf
 #SBATCH --mail-user=<your_email>   # e-mail address
 #SBATCH --mail-type=BEGIN,FAIL,END
+#SBATCH --reservation=ci_pivot_cpu
 
 # Unload all modules
 ml purge

@@ -3,11 +3,12 @@
 #SBATCH -A cis240917
 #SBATCH -p shared # the default queue is "shared" queue
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --time=00:10:00
+#SBATCH --mem=6G
+#SBATCH --time=00:02:00
 #SBATCH --job-name figures
 #SBATCH --mail-user=<your_email>   # e-mail address
 #SBATCH --mail-type=BEGIN,FAIL,END
+#SBATCH --reservation=ci_pivot_cpu
 
 # Load conda and activate environment
 ml conda
