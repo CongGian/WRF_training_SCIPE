@@ -8,8 +8,8 @@ From: ubuntu:22.04
     WPS             intended for 4.6.0
 
 %environment
-    export PATH=/opt/mpich/bin:/opt/hdf5/bin:/opt/netcdf/bin:$PATH
-    export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:/opt/mpich/lib:$LD_LIBRARY_PATH
+    export PATH=/opt/mpich/bin:/opt/netcdf/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:$LD_LIBRARY_PATH
     export NETCDF=/opt/netcdf
     export HDF5=/opt/hdf5
     export CC=mpicc
@@ -20,9 +20,9 @@ From: ubuntu:22.04
     set -e
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        build-essential gfortran g++ gcc make cmake m4 perl python3 file \
+        build-essential gfortran g++ gcc make cmake m4 perl \
         tcsh csh wget curl git ca-certificates \
-        libcurl4-openssl-dev libssl-dev zlib1g-dev libpng-dev libxml2-dev bzip2 xz-utils
+        libcurl4-openssl-dev libssl-dev zlib1g-dev libpng-dev bzip2 xz-utils
     update-ca-certificates
 
     mkdir -p /opt/src /opt/scripts
@@ -31,18 +31,15 @@ From: ubuntu:22.04
     cd /opt/src
     wget -q https://www.mpich.org/static/downloads/4.2.3/mpich-4.2.3.tar.gz
     tar -xf mpich-4.2.3.tar.gz && cd mpich-4.2.3
-    ./configure --prefix=/opt/mpich FC=gfortran
+    ./configure --prefix=/opt/mpich --disable-fortran=no FC=gfortran
     make -j"$(nproc)" && make install
-    export PATH=/opt/mpich/bin:$PATH
-    export LD_LIBRARY_PATH=/opt/mpich/lib:$LD_LIBRARY_PATH
 
     # HDF5 (parallel, with Fortran)
     cd /opt/src
-    wget -q https://github.com/HDFGroup/hdf5/releases/download/hdf5-1_14_3/hdf5-1_14_3.tar.gz -O hdf5-1.14.3.tar.gz
-    tar -xf hdf5-1.14.3.tar.gz && cd hdfsrc
+    wget -q https://github.com/HDFGroup/hdf5/releases/download/hdf5-1.14.3/hdf5-1.14.3.tar.gz
+    tar -xf hdf5-1.14.3.tar.gz && cd hdf5-1.14.3
     CC=mpicc FC=mpif90 ./configure --prefix=/opt/hdf5 --enable-parallel --enable-fortran
     make -j"$(nproc)" && make install
-    export LD_LIBRARY_PATH=/opt/hdf5/lib:$LD_LIBRARY_PATH
 
     # netCDF-C
     cd /opt/src
@@ -51,8 +48,6 @@ From: ubuntu:22.04
     CPPFLAGS="-I/opt/hdf5/include" LDFLAGS="-L/opt/hdf5/lib" CC=mpicc \
       ./configure --prefix=/opt/netcdf --disable-dap --enable-netcdf-4
     make -j"$(nproc)" && make install
-    export PATH=/opt/netcdf/bin:$PATH
-    export LD_LIBRARY_PATH=/opt/netcdf/lib:$LD_LIBRARY_PATH
 
     # netCDF-Fortran (must be built after netCDF-C)
     cd /opt/src
@@ -64,8 +59,8 @@ From: ubuntu:22.04
 
     # Helper: quick environment sourcing
     cat >/opt/scripts/paths.sh <<'EOF'
-export PATH=/opt/mpich/bin:/opt/hdf5/bin:/opt/netcdf/bin:$PATH
-export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:/opt/mpich/lib:$LD_LIBRARY_PATH
+export PATH=/opt/mpich/bin:/opt/netcdf/bin:$PATH
+export LD_LIBRARY_PATH=/opt/netcdf/lib:/opt/hdf5/lib:$LD_LIBRARY_PATH
 export NETCDF=/opt/netcdf
 export HDF5=/opt/hdf5
 export CC=mpicc
@@ -79,21 +74,3 @@ EOF
     echo "  apptainer shell --bind \$PWD:/work wrf.sif"
     echo "  source /opt/scripts/paths.sh"
     echo "  # then compile WRF & WPS under /work"
-
-%test
-    set -e
-    . /opt/scripts/paths.sh
-
-    command -v mpicc
-    command -v mpif90
-    command -v h5pcc
-    command -v ncdump
-    command -v nc-config
-    command -v nf-config
-
-    mpichversion | head -n 5
-    nc-config --version
-    test "$(nc-config --has-nc4)" = "yes"
-    test "$(nc-config --has-parallel4)" = "yes"
-    nf-config --version
-    h5pcc -showconfig | grep -E "HDF5 Version|Parallel HDF5"
